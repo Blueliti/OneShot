@@ -1,102 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wiki Lookup</title>
+  <title>Pinterest Board Test</title>
   <style>
-    body { font-family: sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
-    input { padding: 8px; width: 70%; font-size: 16px; }
-    button { padding: 8px 14px; font-size: 16px; cursor: pointer; }
-    #info { margin-top: 8px; color: #666; font-size: 14px; }
-    #sections { margin-top: 16px; }
-    #sections button {
-      display: inline-block; margin: 3px; padding: 4px 10px;
-      font-size: 13px; background: #eee; border: 1px solid #ccc; border-radius: 4px;
-    }
-    #content { margin-top: 20px; line-height: 1.6; }
-    #content h2 { font-size: 20px; margin-top: 24px; }
+    body { font-family: sans-serif; background: #111; color: #eee; margin: 0; padding: 20px; }
+    h1 { font-size: 18px; }
+    #status { margin: 10px 0; color: #aaa; font-size: 14px; }
+    #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 20px; }
+    #grid img { width: 100%; border-radius: 8px; display: block; background: #222; }
   </style>
 </head>
 <body>
-
-  <input id="searchBox" type="text" placeholder="Type a topic in any language...">
-  <button id="searchBtn">Search</button>
-  <div id="info"></div>
-  <div id="sections"></div>
-  <div id="content"></div>
+  <h1>Test : tableau "Character Design"</h1>
+  <div id="status">Chargement...</div>
+  <div id="grid"></div>
 
   <script>
-    const searchBox = document.getElementById("searchBox");
-    const searchBtn = document.getElementById("searchBtn");
-    const info = document.getElementById("info");
-    const sectionsDiv = document.getElementById("sections");
-    const content = document.getElementById("content");
+    // --- Réglages ---
+    const username = "lucile1234567890";
+    const boardSlug = "tatoo";
+    // ----------------
 
-    const languages = ["fr", "en", "es", "de", "ja"];
+    const rssUrl = "https://fr.pinterest.com/" + username + "/" + boardSlug + ".rss";
+    // On passe par TON mini-serveur local (doit tourner via : node serveur.js)
+    const proxyUrl = "http://localhost:3000/rss?url=" + encodeURIComponent(rssUrl);
 
-    searchBtn.addEventListener("click", async () => {
-      const query = searchBox.value.trim();
-      if (!query) return;
+    const statusEl = document.getElementById("status");
+    const gridEl = document.getElementById("grid");
 
-      info.textContent = "Loading...";
-      sectionsDiv.innerHTML = "";
-      content.innerHTML = "";
-
-      // Try each language Wikipedia until one has a matching article
-      for (const lang of languages) {
-        try {
-          const searchUrl = "https://" + lang + ".wikipedia.org/w/api.php?action=query&list=search&srsearch="
-            + encodeURIComponent(query) + "&format=json&origin=*";
-          const searchResp = await fetch(searchUrl);
-          const searchData = await searchResp.json();
-
-          if (searchData.query && searchData.query.search.length > 0) {
-            const title = searchData.query.search[0].title;
-            info.textContent = "Found on " + lang + ".wikipedia.org — article: " + title;
-            await loadArticle(lang, title);
-            return;
-          }
-        } catch (error) {
-          // try next language
+    async function loadBoard() {
+      try {
+        const response = await fetch(proxyUrl);
+        if (!response.ok) {
+          statusEl.textContent = "Erreur serveur : " + response.status;
+          return;
         }
-      }
 
-      info.textContent = "No result found in any language.";
-    });
+        const xmlText = await response.text();
+        const xml = new DOMParser().parseFromString(xmlText, "text/xml");
+        const items = xml.querySelectorAll("item");
 
-    // Load the full article, split into sections
-    async function loadArticle(lang, title) {
-      // This endpoint returns the article HTML, section by section
-      const url = "https://" + lang + ".wikipedia.org/w/api.php?action=parse&page="
-        + encodeURIComponent(title) + "&prop=sections|text&format=json&origin=*";
+        if (items.length === 0) {
+          statusEl.textContent = "Aucun pin trouvé dans le flux.";
+          return;
+        }
 
-      const resp = await fetch(url);
-      const data = await resp.json();
-
-      // 1) Build clickable section buttons from the section list
-      const sections = data.parse.sections;
-      sections.forEach((s) => {
-        const btn = document.createElement("button");
-        btn.textContent = s.line;          // section heading text
-        btn.addEventListener("click", () => {
-          // scroll to that section heading inside the content
-          const target = document.getElementById("sec-" + s.index);
-          if (target) target.scrollIntoView({ behavior: "smooth" });
+        let count = 0;
+        items.forEach(item => {
+          const description = item.querySelector("description");
+          if (!description) return;
+          const match = description.textContent.match(/<img src="([^"]+)"/);
+          if (match) {
+            const img = document.createElement("img");
+            img.src = match[1].replace("/236x/", "/736x/");
+            gridEl.appendChild(img);
+            count++;
+          }
         });
-        sectionsDiv.appendChild(btn);
-      });
 
-      // 2) Drop in the full article text
-      content.innerHTML = data.parse.text["*"];
-
-      // 3) Tag each heading so the section buttons can scroll to it
-      const headings = content.querySelectorAll("h2, h3");
-      headings.forEach((h, i) => {
-        h.id = "sec-" + (i + 1);
-      });
+        statusEl.textContent = count + " image(s) chargée(s).";
+      } catch (err) {
+        statusEl.textContent = "Impossible de joindre le serveur local. Il tourne ? (node serveur.js)";
+        console.error(err);
+      }
     }
-  </script>
 
+    loadBoard();
+  </script>
 </body>
 </html>
