@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Composition Tool</title>
+  <!-- link the stylesheet -->
+  <link rel="stylesheet" href="css/canvaComp.css">
+</head>
+<body>
+  <div id="selection"></div>
+  <canvas id="c"></canvas>
+
+  <div class="toolbar" id="toolbar">
+    <i data-lucide="pencil"></i>
+  </div>
+
+  <div class="corner-picker">
+    <button data-corner="tl" class="active"><i data-lucide="corner-up-left"></i></button>
+    <button data-corner="tr"><i data-lucide="corner-up-right"></i></button>
+    <button data-corner="bl"><i data-lucide="corner-down-left"></i></button>
+    <button data-corner="br"><i data-lucide="corner-down-right"></i></button>
+  </div>
+
+  <!-- load Lucide, then our own script -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="jsScript/userEventListeners/userEventListeners.js"></script>
+  <script src="jsScript/jsGeometry/ruleOfThird.js"></script>
+  <script src="jsScript/jsGeometry/spiral.js"></script>
+  <script src="jsScript/bodyScript.js"></script>
+</body>
+</html>
