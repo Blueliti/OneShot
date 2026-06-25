@@ -43,14 +43,15 @@
     }
   };
 
-  function placeCornerButtons() {
+ function placeCornerButtons() {
     const x = selX, y = selY, w = lastWidth, h = lastHeight;
-    const off = 14;   // half of 28px button
+    const half = 14;   // half the 28px button — centers it on the corner
+    const pad = 10;    // gap between bracket and the selection box; raise to push out
 
-    setBtn("cornerTopLeft",  x - off,     y - off);
-    setBtn("cornerTopRight", x + w - off, y - off);
-    setBtn("cornerBotLeft",  x - off,     y + h - off);
-    setBtn("cornerBotRight", x + w - off, y + h - off);
+    setBtn("cornerTopLeft",  x - half - pad,     y - half - pad);
+    setBtn("cornerTopRight", x + w - half + pad, y - half - pad);
+    setBtn("cornerBotLeft",  x - half - pad,     y + h - half + pad);
+    setBtn("cornerBotRight", x + w - half + pad, y + h - half + pad);
 
     document.querySelectorAll(".cornerBtn").forEach((b) => {
       b.classList.toggle("active", b.dataset.corner === corner);

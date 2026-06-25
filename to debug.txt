@@ -1,0 +1,4 @@
+Corner angle to snap on corner selection
+when button click again still animation showing even if on 
+when CLICK OUTSIDE THE PENCIL ICON CAME BACK EVEN IF A NEW SELETION ISNT DRAW 
+add color picker 
