@@ -4,29 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Composition Tool</title>
-  <!-- link the stylesheet -->
   <link rel="stylesheet" href="css/canvaComp.css">
 </head>
 <body>
   <div id="selection"></div>
   <canvas id="c"></canvas>
 
+  <div id="pencilCursor"></div>
+
   <div class="toolbar" id="toolbar">
-    <i data-lucide="pencil"></i>
+    <div class="highlight" id="highlightA"></div>
+    <div class="highlight" id="highlightB"></div>
+    <span id="colorPicker"></span>
+    <span id="palette"></span>
+    <span id="spiral"></span>
+    <span id="thirdGrid"></span>
+    <span id="fourthGrid"></span>
   </div>
 
-  <div class="corner-picker">
-    <button data-corner="tl" class="active"><i data-lucide="corner-up-left"></i></button>
-    <button data-corner="tr"><i data-lucide="corner-up-right"></i></button>
-    <button data-corner="bl"><i data-lucide="corner-down-left"></i></button>
-    <button data-corner="br"><i data-lucide="corner-down-right"></i></button>
+  <div id="cornerBar">
+    <span id="cornerTopLeft" class="cornerBtn" data-corner="tl"></span>
+    <span id="cornerTopRight" class="cornerBtn" data-corner="tr"></span>
+    <span id="cornerBotLeft" class="cornerBtn" data-corner="bl"></span>
+    <span id="cornerBotRight" class="cornerBtn" data-corner="br"></span>
   </div>
 
-  <!-- load Lucide, then our own script -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="jsScript/toolbar/pencil.js"></script>
+  <script src="jsScript/toolbar/colorPicker.js"></script>
+  <script src="jsScript/toolbar/palette.js"></script>
+  <script src="jsScript/toolbar/corner.js"></script>
+  <script src="jsScript/toolbar/spiral.js"></script>
+  <script src="jsScript/toolbar/thirdGrid.js"></script>
+  <script src="jsScript/toolbar/fourthGrid.js"></script>
+
   <script src="jsScript/userEventListeners/userEventListeners.js"></script>
   <script src="jsScript/jsGeometry/ruleOfThird.js"></script>
   <script src="jsScript/jsGeometry/spiral.js"></script>
   <script src="jsScript/bodyScript.js"></script>
+  <script src="jsScript/toolbar/toolbarControls.js"></script>
 </body>
 </html>

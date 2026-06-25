@@ -1,5 +1,10 @@
-function setupMouseDown(ctx) {    
+function setupMouseDown(ctx) {
   document.addEventListener("mousedown", (e) => {
+    if (toolbar.contains(e.target) || cornerBar.contains(e.target)) return;
+
+    // entering draw mode → pencil cursor back
+    document.body.classList.remove("has-selection");
+
     isDragging = true;
     startX = e.clientX;
     startY = e.clientY;
@@ -13,8 +18,8 @@ function setupMouseDown(ctx) {
 
 function setupMouseMove(ctx) {
   document.addEventListener("mousemove", (e) => {
-    toolbar.style.left = (e.clientX + 5) + "px";
-    toolbar.style.top = (e.clientY - 30) + "px";
+    pencilCursor.style.left = e.clientX + "px";
+    pencilCursor.style.top = e.clientY + "px";
 
     if (!isDragging) return;
     const x = Math.min(e.clientX, startX);
@@ -47,6 +52,19 @@ function setupMouseUp(ctx) {
 
     lastWidth = width;
     lastHeight = height;
+    selX = x;
+    selY = y;
     drawOverlay(width, height);
+
+    // selection done → normal arrow cursor
+    document.body.classList.add("has-selection");
+
+    toolbar.style.display = "flex";
+    toolbar.style.top = y + "px";
+    toolbar.style.left = x + "px";
+    toolbar.style.transform = "translateX(calc(-100% - 12px))";
+
+    if (window.initToolbarHighlight) window.initToolbarHighlight();
+    if (window.updateCornerBar) window.updateCornerBar();
   });
 }
