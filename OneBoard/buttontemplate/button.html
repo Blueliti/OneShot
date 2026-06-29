@@ -1,0 +1,31 @@
+<button class="button"><style>
+.button { background-color: #8b8b8b; 
+width: 44px;            /* fixed button size */
+height: 44px;
+hoover-effect { background-color: #ffa800; }
+display: flex;
+border-radius: 100px; 
+border: none; 
+color: white; 
+padding: 10px 12px; 
+text-align: center; 
+text-decoration: none; 
+display: inline-block; 
+margin: 4px 4px; 
+box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.6);
+}
+.placeHolder {
+  display: inline-block;
+  transform: translate(0px, 0px);   /* default nudge for ALL icons */
+}
+.placeHolder.icon-infos {
+  transform: translate(-10px, -8px);   /* extra nudge for ONLY the infos icon */
+}
+.placeHolder.icon-perspective {
+  transform: translate( -2px, 0px);   /* extra nudge for ONLY the perspective icon */
+}
+.placeHolder.icon-palette {
+  transform: translate( 0px, 2px);   /* extra nudge for ONLY the palette icon */
+}
+
+</style><i class= "placeHolder" ></i></button>  

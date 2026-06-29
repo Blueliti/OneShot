@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Composition Tool</title>
+</head>
+<body>
+  <div class="toolBarBoxe">
+    <div class="buttonSlot" data-icon="icons/pencil.html"></div>
+    <div class="buttonSlot" data-icon="icons/grid.html"></div>
+    <div class="buttonSlot" data-icon="icons/perspective.html"></div>
+    <div class="buttonSlot" data-icon="icons/palette.html"></div>
+    <div class="buttonSlot" data-icon="icons/infos.html"></div>
+  </div>
+
+  <script>
+    fetch("toolBarBoxe.html")
+      .then(r => r.text())
+      .then(boxStyle => {
+        document.head.insertAdjacentHTML("beforeend", boxStyle);  // add the box STYLE, don't erase the buttons
+      });
+    fetch("button.html")
+      .then(r => r.text())
+      .then(buttonHtml => {
+        document.querySelectorAll(".buttonSlot").forEach(s => {
+          s.innerHTML = buttonHtml;                 // 1) put the button in
+          const iconFile = s.dataset.icon;          // 2) read which icon THIS slot wants
+          const iconName = iconFile.split("/").pop().replace(".html", ""); // e.g. "infos"
+          fetch(iconFile)                           // 3) load that icon file
+            .then(r => r.text())
+            .then(iconHtml => {
+              const holder = s.querySelector(".placeHolder");
+              holder.innerHTML = iconHtml;          // 4) drop it in
+              holder.classList.add("icon-" + iconName); // 5) tag it, e.g. "icon-infos"
+            });
+        });
+      });
+  </script>
+</body>
+</html>
